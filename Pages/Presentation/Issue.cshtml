@@ -1,0 +1,172 @@
+﻿@page
+@model WoodgroveDemo.Pages.Presentation.IssueModel
+@{
+    ViewData["Title"] = "Issue Woodgrove University contractor ID";
+    ViewData["SubTitle"] = "Presentation attestation";
+}
+
+@section Background {
+    <img class="img-fluid wgu-background-image" src="~/images/scenarios/Contractor.jpg">
+
+    <style>
+        .wgu-title {
+            color: white !important;
+            text-shadow: 0 0 0 white;
+        }
+    </style>
+}
+
+@section Demo {
+    <div class="jumbotron wgu_jumbotron_demo">
+        <div class="bs-stepper vertical">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- your steps here -->
+                <div class="step" data-target="#intro-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="intro-part"
+                        id="intro-part-trigger">
+                        <span class="bs-stepper-circle" style="visibility: hidden;"><i class="bi bi-info-lg"></i></span>
+                        <span class="bs-stepper-label">Welcome</span>
+                    </button>
+                </div>
+                <div class="step" data-target="#information-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="information-part"
+                        id="information-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-keyboard"></i></span>
+                        <span class="bs-stepper-label">Verify your identity</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#qrcode-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="qrcode-part"
+                        id="qrcode-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-qr-code"></i></span>
+                        <span class="bs-stepper-label">Scan the QR code</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#userAction-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="userAction-part"
+                        id="userAction-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-person-lock"></i></span>
+                        <span class="bs-stepper-label">Identify yourself</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#completed-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="completed-part"
+                        id="completed-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-check2-all"></i></span>
+                        <span class="bs-stepper-label">Completed</span>
+                    </button>
+                </div>
+            </div>
+            <div class="bs-stepper-content position-relative" style="width: 100%;">
+                <!-- Introdction step -->
+                <div id="intro-part" class="content fs-5" role="tabpanel" aria-labelledby="intro-part-trigger">
+
+                    This online demo will help you issue a Woodgrove University Contractor ID card.
+                    @Model._settings.CardDetails.Card.Description
+
+
+                    <p style="padding-top: 15px;">
+                        If you already have this
+                        credential, first delete it from the Authenticator app, or
+                        <a asp-page="Present" class="link-warning">start the presentation demo</a>.
+                    </p>
+
+                    <p style="padding-top: 15px;">
+                        To start, click the
+                        start
+                        button.
+                    </p>
+
+                    <div class="position-absolute bottom-0 end-0">
+                        <button class="btn btn-warning" onclick="stepper.next()">Start</button>
+                    </div>
+                </div>
+
+                <!-- Add credential's information step -->
+                <div id="information-part" class="content fs-5" role="tabpanel" aria-labelledby="information-part-trigger">
+
+                    Befor you can issue a Woodgrove Contractor ID card, you should verify your identity.<br>
+
+                    <ul style="margin-top: 25px;">
+                        <li>If you already verified your identity, select <b>Next</b>.</li>
+                        <li style="margin-top: 7px;">Otherwise, add a <a style="color: orange;"
+                                href="https://trueidentityinc.azurewebsites.net/?returnUrl=https%3A%2F%2FWoodgroveDemo.com%2F"
+                                target="_blank">True
+                                identity</a> to your Microsoft Authenticator
+                            Then, navigate back to <a style="color: orange;"
+                                href="https://WoodgroveDemo.com/Presentation/issue">this
+                                page</a>.
+                        </li>
+                    </ul>
+
+
+                    <div class="position-absolute bottom-0 start-0">
+                        <button class="btn btn-secondary" onclick="stepper.previous()">Back</button>
+                    </div>
+                    <div class="position-absolute bottom-0 end-0">
+                        <button class="btn btn-warning" onclick="startIssuance('Presentation', null);">
+                            <span id="startDemoSpinner" style="display: none;" class="spinner-border spinner-border-sm"
+                                role="status" aria-hidden="true"></span> Next</button>
+                    </div>
+                </div>
+                <div id="qrcode-part" class="content fs-5" role="tabpanel" aria-labelledby="qrcode-part-trigger">
+                    <partial name="QrCodePartial" />
+                </div>
+                <div id="userAction-part" class="content fs-5" role="tabpanel" aria-labelledby="userAction-part-trigger">
+                    <p>
+                        In the Microsoft Authenticator enter select the <span style="color: orange;">True Identity</b> credential. Then select
+                        <b>Add</b>.
+                    </p>
+
+                    <div class="text-center">
+                        <div class="spinner-border" style="color: orange;" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="completed-part" class="content fs-3" style="margin-top: 50px;" role="tabpanel"
+                    aria-labelledby="completed-part-trigger">
+                    Congratulations, your Woodgrove Contractor ID card was issued and is stored in Microsoft authenticator
+                    on your mobile
+                    phone and ready to use.
+
+                    <div class="text-center fs-1" style="margin-top: 20px;">
+                        <i class="bi bi-emoji-smile"></i>
+                    </div>
+
+                    <p class="fs-6" style="margin-top: 20px;">
+                        Next, start the <a id="linkToPresent" class="link-warning" asp-page="Present">presentation of
+                            the
+                            student card</a> demo
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+
+
+}
+
+@section VerifiableCredentialDescription {
+    <p style="margin-top: 10px;">
+        This example shows how to issue a verifiable credential by <a
+            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-idtoken">presenting claims from an
+            existing verifiable credential</a>.
+
+        The existing verifiable credential used for the demo is <a
+            href="https://trueidentityinc.azurewebsites.net/?returnUrl=https%3A%2F%2FWoodgroveDemo.com%2F">
+            True identity</a>.
+
+        The verifiable credential contains the <i>first name</i>, and <i>last name</i> claims of the True identity. For
+        details check the <a
+            href="https://learn.microsoft.com/en-us/entra/verified-id/rules-and-display-definitions-model#verifiablepresentationattestation-type">verifiablePresentation</a>
+        attestation in manifest below.
+    </p>
+}

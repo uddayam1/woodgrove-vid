@@ -1,0 +1,19 @@
+@model WoodgroveDemo.Models.Manifest.Display
+<div class="card-preview-container"
+    style="background-color: @Model.Card.BackgroundColor ;">
+    <div class="card-preview-logo">
+        <img src="@Model.Card.Logo.Uri"
+            alt="@Model.Card.Logo.Description">
+    </div>
+    <div>
+        <div class="card-preview-name" data-bind="text: title"
+            style="color: @Model.Card.TextColor ;">
+            @Model.Card.Title</div>
+        <div>
+            <div class="card-preview-issuer" data-bind="text: issuer"
+                style="color: @Model.Card.TextColor;">
+                @Model.Card.IssuedBy
+            </div>
+        </div>
+    </div>
+</div>

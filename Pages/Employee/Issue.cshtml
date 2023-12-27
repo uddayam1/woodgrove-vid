@@ -1,0 +1,129 @@
+﻿@page
+@model WoodgroveDemo.Pages.Employee.IssueModel
+@{
+    ViewData["Title"] = "Get your Woodgrove University employee ID";
+    ViewData["SubTitle"] = "Employee credential attestation";
+}
+
+
+
+@section Background {
+    <img class="img-fluid wgu-background-image" src="~/images/scenarios/Office.jpg">
+}
+
+@section Demo {
+    <div class="jumbotron wgu_jumbotron_demo">
+        <div class="bs-stepper vertical">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- your steps here -->
+                <div class="step" data-target="#intro-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="intro-part"
+                        id="intro-part-trigger">
+                        <span class="bs-stepper-circle" style="visibility: hidden;"><i class="bi bi-info-lg"></i></span>
+                        <span class="bs-stepper-label">Welcome</span>
+                    </button>
+                </div>
+                <div class="step" data-target="#qrcode-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="qrcode-part"
+                        id="qrcode-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-qr-code"></i></span>
+                        <span class="bs-stepper-label">Scan the QR code</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#userAction-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="userAction-part"
+                        id="userAction-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-person-lock"></i></span>
+                        <span class="bs-stepper-label">Sign-in to <br> Woodgrove</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#completed-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="completed-part"
+                        id="completed-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-check2-all"></i></span>
+                        <span class="bs-stepper-label">Completed</span>
+                    </button>
+                </div>
+            </div>
+            <div class="bs-stepper-content position-relative" style="width: 100%;">
+                <!-- Introdction step -->
+                <div id="intro-part" class="content fs-5" role="tabpanel" aria-labelledby="intro-part-trigger">
+
+                    This online demo will help you issue a Woodgrove University employee ID card.
+                    @Model._settings.CardDetails.Card.Description
+
+                    <p>
+                        To get a digital employee card, you first need to <a style="color: orange;" target="_blank"
+                            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-verifiedemployee#set-up-the-user-for-microsoft-authenticator">set
+                            up the user for Microsoft Authenticator</a>.
+                    </p>
+
+                    <p style="padding-top: 15px;">
+                        If you already have employee ID card
+                        , first delete it from the Authenticator app, or
+                        <a asp-page="Present" class="link-warning">start the presentation demo</a>.
+                    </p>
+
+                    <p style="padding-top: 15px;">
+                        To start, click the
+                        start
+                        button.
+                    </p>
+
+                    <div class="position-absolute bottom-0 end-0">
+                        <button class="btn btn-warning" onclick="startIssuance('Employee', null);">
+                            <span id="startDemoSpinner" style="display: none;" class="spinner-border spinner-border-sm"
+                                role="status" aria-hidden="true"></span> Start</button>
+                    </div>
+                </div>
+
+                <div id="qrcode-part" class="content fs-5" role="tabpanel" aria-labelledby="qrcode-part-trigger">
+                    <partial name="QrCodePartial" />
+                </div>
+                <div id="userAction-part" class="content fs-5" role="tabpanel" aria-labelledby="userAction-part-trigger">
+                    <p>
+                        In the Microsoft Authenticator <b>sign-in to your Woodgrove account</b> and then select
+                        <b>Add</b>.
+                    </p>
+
+                    <div class="text-center">
+                        <div class="spinner-border" style="color: orange;" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="completed-part" class="content fs-3" style="margin-top: 50px;" role="tabpanel"
+                    aria-labelledby="completed-part-trigger">
+                    Congratulations, your Woodgrove Employee ID card was issued and is stored in Microsoft authenticator
+                    on your mobile
+                    phone and ready to use.
+
+                    <div class="text-center fs-1" style="margin-top: 20px;">
+                        <i class="bi bi-emoji-smile"></i>
+                    </div>
+
+                    <p class="fs-6" style="margin-top: 20px;">
+                        Next, start the <a id="linkToPresent" class="link-warning" asp-page="Present">presentation of
+                            the
+                            student card</a> demo
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section VerifiableCredentialDescription {
+    <p style="margin-top: 10px;">
+        This example shows how to issue a <a
+            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-verifiedemployee">verified employee
+        </a> credential for directory-based claims. All the claims in the verified employee credential come from attributes
+        in the
+        user's profile.
+        Issuing a employee credential is now supported in <a href="https://myaccount.microsoft.com/">MyAccount</a> so you
+        don't need to issue it by yourself. This example is only necessary if you would like
+        to handle issuance in your own app.
+    </p>
+}

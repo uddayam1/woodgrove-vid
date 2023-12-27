@@ -1,0 +1,146 @@
+﻿@page
+@model WoodgroveDemo.Pages.IdToken.PresentModel
+@{
+    ViewData["Title"] = "Welcome to Woodgrove Groceries store";
+    ViewData["SubTitle"] = "OpenID Connect identity provider attestation";
+}
+
+
+@section Background {
+    <img class="img-fluid wgu-background-image" src="~/images/scenarios/retail.jpg">
+}
+
+@section Demo {
+
+    <div class="row" id="startDemoUi">
+        <div class="col-10">
+
+        </div>
+        <div class="col" style="margin-top: 200px;">
+            <button class="btn btn-success fs-4" onclick="$('#startDemoUi').hide(); startDemo()"
+                style="border-radius: 50%; background-color: green; height: 170px; width: 170px">Loyalty member? <br>
+                Click!</button>
+        </div>
+    </div>
+
+    <style>
+        .wgu-title {
+            color: green !important;
+            text-shadow: 1px 1px white;
+        }
+    </style>
+
+    <div class="jumbotron wgu_jumbotron_demo" style="display: none;" id="layover">
+        <div class="bs-stepper vertical">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- your steps here -->
+                <div class="step" data-target="#intro-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="intro-part"
+                        id="intro-part-trigger">
+                        <span class="bs-stepper-circle" style="visibility: hidden;"><i class="bi bi-info-lg"></i></span>
+                        <span class="bs-stepper-label">Welcome</span>
+                    </button>
+                </div>
+                <div class="step" data-target="#qrcode-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="qrcode-part"
+                        id="qrcode-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-qr-code"></i></span>
+                        <span class="bs-stepper-label">Scan the QR code</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#userAction-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="userAction-part"
+                        id="userAction-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-person-lock"></i></span>
+                        <span class="bs-stepper-label">Share the card</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#completed-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="completed-part"
+                        id="completed-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-check2-all"></i></span>
+                        <span class="bs-stepper-label">Completed</span>
+                    </button>
+                </div>
+            </div>
+            <div class="bs-stepper-content position-relative" style="width: 100%;">
+                <!-- Introdction step -->
+                <div id="intro-part" class="content fs-5" role="tabpanel" aria-labelledby="intro-part-trigger">
+
+                    <p>
+                        This online demo will help youb benefit from Woodgrove Groceries loyalty program rewards that
+                        Woodgrove Groceries offers to you and get an exclusive discounted rates.
+                    </p>
+
+
+                    <p style="padding-top: 15px;">
+                        Do not have a Woodgrove Groceries loyalty card? click <a asp-page="Issue"
+                            class="link-warning">here</a> to get one.
+                    </p>
+
+                    <p style="padding-top: 15px;">
+                        To start, click the
+                        start
+                        button.
+                    </p>
+
+                    <div class="position-absolute bottom-0 end-0">
+                        <button class="btn btn-warning" onclick="startPresentation('SelfIssued');">
+                            <span id="startDemoSpinner" style="display: none;" class="spinner-border spinner-border-sm"
+                                role="status" aria-hidden="true"></span> Start</button>
+                    </div>
+                </div>
+
+                <div id="qrcode-part" class="content fs-5" role="tabpanel" aria-labelledby="qrcode-part-trigger">
+                    <partial name="QrCodePartial" />
+                </div>
+
+                <div id="userAction-part" class="content fs-5" role="tabpanel" aria-labelledby="userAction-part-trigger">
+                    <p>
+                        In the Microsoft Authenticator review the presentation request and share the student card with us.
+                    </p>
+
+
+
+                    <div class="text-center">
+                        <div class="spinner-border" style="color: orange;" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="completed-part" class="content fs-3" style="margin-top: 50px;" role="tabpanel"
+                    aria-labelledby="completed-part-trigger">
+                    Congratulations <span id="valueToPresent" style="color: orange;"></span>, your class attendance
+                    submission has been successfully completed.
+
+                    <div class="text-center fs-1" style="margin-top: 20px;">
+                        <i class="bi bi-emoji-smile"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@section VerifiableCredentialDescription {
+
+    <p style="margin-top: 10px;">
+        This example shows how to present (and verify) a verifiable credential with <a
+            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-idtoken">ID tokens
+            attestation</a>, where you were required to do an interactive sign-in to an OpenID Connect (OIDC)
+        identity provider during the credential issuance flow.
+
+        In this example, you issued the verifiable credential after you signed-in or signed-up with a <a
+            href="https://woodgrovedemo.com/">Woodgrove Groceries account</a>.
+        The verifiable credential contains the <i>name</i>, <i>loyaltyNumber</i>, <i>loyaltyTier</i>, and
+        <i>loyaltySince</i> claims
+        that return by Woodgrove Groceries' identity provider. For details check the <a
+            href="https://learn.microsoft.com/en-us/entra/verified-id/rules-and-display-definitions-model#idtokenattestation-type">idTokenAttestation
+            attestation</a> in manifest below.
+    </p>
+}

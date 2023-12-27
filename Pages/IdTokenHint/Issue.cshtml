@@ -1,0 +1,360 @@
+﻿@page
+@model WoodgroveDemo.Pages.IdTokenHint.IssueModel
+@{
+    ViewData["Title"] = "Get your student card";
+    ViewData["SubTitle"] = "ID token hint attestation";
+}
+
+
+@section Background {
+    <img class="img-fluid wgu-background-image" src="~/images/scenarios/Students.jpg">
+}
+
+@section Demo {
+    <div class="jumbotron wgu_jumbotron_demo">
+        <div class="bs-stepper vertical">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- your steps here -->
+                <div class="step" data-target="#intro-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="intro-part"
+                        id="intro-part-trigger">
+                        <span class="bs-stepper-circle" style="visibility: hidden;"><i class="bi bi-info-lg"></i></span>
+                        <span class="bs-stepper-label">Welcome</span>
+                    </button>
+                </div>
+                <div class="step" data-target="#information-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="information-part"
+                        id="information-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-keyboard"></i></span>
+                        <span class="bs-stepper-label">Enter your name</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#qrcode-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="qrcode-part"
+                        id="qrcode-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-qr-code"></i></span>
+                        <span class="bs-stepper-label">Scan the QR code</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#userAction-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="userAction-part"
+                        id="userAction-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-person-lock"></i></span>
+                        <span class="bs-stepper-label">Enter the PIN code</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#completed-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="completed-part"
+                        id="completed-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-check2-all"></i></span>
+                        <span class="bs-stepper-label">Completed</span>
+                    </button>
+                </div>
+            </div>
+            <div class="bs-stepper-content position-relative" style="width: 100%;">
+                <!-- Introdction step -->
+                <div id="intro-part" class="content fs-5" role="tabpanel" aria-labelledby="intro-part-trigger">
+
+                    This online demo will help you get Woodgrove University student card.
+                    @Model._settings.CardDetails.Card.Description
+
+
+                    <p style="padding-top: 15px;">
+                        If you already have this
+                        credential, first delete it from the Authenticator app, or
+                        <a asp-page="Present" class="link-warning">start the presentation demo</a>.
+                    </p>
+
+                    <p style="padding-top: 15px;">
+                        To start, click the
+                        start
+                        button.
+                    </p>
+
+                    <div class="position-absolute bottom-0 end-0">
+                        <button class="btn btn-warning" onclick="stepper.next()">Start</button>
+                    </div>
+                </div>
+
+                <!-- Add credential's information step -->
+                <div id="information-part" class="content fs-5" role="tabpanel" aria-labelledby="information-part-trigger">
+
+                    Please enter your name and click next.
+
+                    <table style="border-style: none; width: 100% margin-top: 30px;">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <label for="firstName" class="form-label">First name:</label>
+                                <input type="text" class="form-control" id="firstName" asp-for="FirstName"
+                                    style="width: 150px;" required>
+
+                                <label for="lastName" class="form-label" style="margin-top: 20px;">Last
+                                    name:</label>
+                                <input type="text" class="form-control" id="lastName" asp-for="LastName"
+                                    style="width: 150px;" required>
+                            </td>
+                            <td style="padding-left: 40px; vertical-align: top;">
+                                <label for="Photo" class="form-label">Photo (optional):</label>
+                                <br>
+                                <input type='file' id="imageUpload" accept="image/*" class="btn btn-outline-warning"
+                                    style="width: 120px; overflow:hidden; color: transparent; padding-top: 3px;padding-bottom: 3px;" />
+
+
+                                <button id="switchFrontBtn" onclick="switchCamera('user'); return false;"
+                                    class="btn btn-outline-warning">Take a selfie</button>
+                                <button id="snapBtn" onclick="takePicture(); event.preventDefault() ; return false;"
+                                    style="display: none;" class="btn btn-outline-warning">Snap</button>
+                                <br>
+
+                                <video id="cam" autoplay muted playsinline
+                                    style="width: 200px; height: 200px; display: none;">Not available</video>
+                                <canvas id="canvas" style="display:none"></canvas>
+
+                                <img id="selfie" width="200" style="max-height: 200px; margin-top: 20px;" />
+
+                                <br>
+
+                                <button id="clearBtn" style="display: none;" class="btn btn-link link-warning"
+                                    onclick="clearPhoto();">Remove</button>
+
+                                <input type="hidden" id="imageUploadStr" class="form-control" asp-for="Photo">
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <div class="position-absolute bottom-0 end-0">
+                        <button type="button" id="startDemoBtn" class="btn btn-warning" onclick="InitAndStartDemo()">
+                         <span id="startDemoSpinner" style="display: none;" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Next</button>
+                    </div>
+
+                    <div class="position-absolute bottom-0 start-0">
+                        <button class="btn btn-secondary" onclick="stepper.previous()">Back</button>
+                    </div>
+                </div>
+                <div id="qrcode-part" class="content fs-5" role="tabpanel" aria-labelledby="qrcode-part-trigger">
+                    <partial name="QrCodePartial" />
+                </div>
+                <div id="userAction-part" class="content fs-5" role="tabpanel" aria-labelledby="userAction-part-trigger">
+                    <p>
+                        In the Microsoft Authenticator enter the following PIN code. Then select <b>Next</b> and <b>Add</b>.
+                    </p>
+
+                    <div id="pinCode" class="fs-2" style="color: orange;"></div>
+                </div>
+                <div id="completed-part" class="content fs-3" style="margin-top: 50px;" role="tabpanel"
+                    aria-labelledby="completed-part-trigger">
+                    Congratulations, your student card was issued and is stored in Microsoft authenticator on your
+                    mobile
+                    phone and ready to use.
+
+                    <div class="text-center fs-1" style="margin-top: 20px;">
+                        <i class="bi bi-emoji-smile"></i>
+                    </div>
+
+                    <p class="fs-6" style="margin-top: 20px;">
+                        Next, start the <a id="linkToPresent" class="link-warning" asp-page="Present">presentation of
+                            the
+                            student card</a> demo
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+
+    <script>
+        // Start the flow
+        function InitAndStartDemo() {
+            var data  = JSON.stringify(
+                {
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    photo: $("#imageUploadStr").val()
+                });
+            startIssuance('IdTokenHint', data);
+        }
+
+        // Script for the select file option
+        document.getElementById('imageUpload').addEventListener('change', function (e) {
+            uploadImage(e)
+        });
+
+        function uploadImage(e) {
+            if (e.target.files) {
+                var reader = new FileReader();
+                reader.readAsDataURL(e.target.files[0]);
+                reader.onloadend = function (e) {
+                    var imageObj = new Image();
+                    imageObj.src = e.target.result;
+                    imageObj.onload = function (ev) {
+                        var canvas = document.createElement("canvas");
+                        canvas.width = 480;
+                        canvas.height = 640;
+                        console.log(`img size: ${imageObj.naturalWidth} x ${imageObj.naturalHeight}`);
+                        canvas.getContext('2d').drawImage(imageObj, 0, 0, imageObj.naturalWidth, imageObj.naturalHeight, 0, 0, canvas.width, canvas.height);
+                        document.getElementById("selfie").src = canvas.toDataURL('image/jpeg');
+                        document.getElementById("selfie").style.display = "block";
+
+                        getImageULR();
+
+                        // Show the remove button
+                        document.getElementById('clearBtn').style.display = '';
+
+                    }
+                }
+            }
+        }
+
+        function getImageULR() {
+            // Get the photo base64 code
+            var indexOfBase64 = document.getElementById("selfie").src.indexOf("base64,");
+            document.getElementById("imageUploadStr").value = document.getElementById("selfie").src.substring(indexOfBase64 + 7);
+        }
+    </script>
+
+    <script>
+        // Script for the selfie option
+        // Source code: https://codepen.io/ocinpp/pen/EpbXKz
+
+        // reference to the current media stream
+        var mediaStream = null;
+
+        // Prefer camera resolution nearest to 1280x720.
+        var constraints = {
+            audio: false,
+            video: {
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                facingMode: "environment"
+            }
+        };
+
+        async function getMediaStream(constraints) {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+                let video = document.getElementById('cam');
+                video.srcObject = mediaStream;
+                video.onloadedmetadata = (event) => {
+                    video.play();
+                };
+            } catch (err) {
+                console.error(err.message);
+            }
+        };
+
+        async function switchCamera(cameraMode) {
+            try {
+                // stop the current video stream
+                stopVideoStream();
+
+                // Show the video element 
+                document.getElementById('cam').style.display = '';
+
+                // change "facingMode"
+                constraints.video.facingMode = cameraMode;
+
+                // Show the snap button and hide the start video button
+                document.getElementById('snapBtn').style.display = '';
+                document.getElementById('switchFrontBtn').style.display = 'none';
+
+                // Hide the selfie image
+                document.getElementById('selfie').style.display = 'none';
+
+                // get new media stream
+                await getMediaStream(constraints);
+            } catch (err) {
+                console.error(err.message);
+                alert(err.message);
+            }
+        }
+
+        function takePicture() {
+            let canvas = document.getElementById('canvas');
+            let video = document.getElementById('cam');
+            let selfie = document.getElementById('selfie');
+            let context = canvas.getContext('2d');
+
+            const height = video.videoHeight;
+            const width = video.videoWidth;
+
+            if (width && height) {
+                canvas.width = width;
+                canvas.height = height;
+                context.drawImage(video, 0, 0, width, height);
+                var data = canvas.toDataURL('image/png');
+                selfie.setAttribute('src', data);
+
+                // Hide the video
+                document.getElementById('cam').style.display = 'none';
+
+                // Hide the snap button and show the start video button
+                document.getElementById('snapBtn').style.display = 'none';
+                document.getElementById('switchFrontBtn').style.display = '';
+
+                // Show the image and the remove button
+                document.getElementById('selfie').style.display = '';
+                document.getElementById('clearBtn').style.display = '';
+
+                stopVideoStream();
+
+                // Get the image URL in base64 format
+                getImageULR();
+
+            } else {
+                clearPhoto();
+            }
+        }
+
+        function stopVideoStream() {
+            // Stop the current video stream
+            if (mediaStream != null && mediaStream.active) {
+                var tracks = mediaStream.getVideoTracks();
+                tracks.forEach(track => {
+                    track.stop();
+                })
+            }
+
+            // set the video source to null
+            document.getElementById('cam').srcObject = null;
+        }
+
+        function clearPhoto() {
+            let canvas = document.getElementById('canvas');
+            let selfie = document.getElementById('selfie');
+            let context = canvas.getContext('2d');
+
+            context.fillStyle = "black";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            var data = canvas.toDataURL('image/png');
+            selfie.setAttribute('src', data);
+
+            // Hide the remove button
+            document.getElementById('clearBtn').style.display = 'none';
+        }
+
+        clearPhoto();
+    </script>
+}
+
+@section VerifiableCredentialDescription {
+
+    This example shows how to issue a <a href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart">ID
+        token
+        hint attestation </a> verifiable credential, where Woodgrove University
+
+    passes claim values in the issuance request payload. Including the <i>family_name</i> and <i>given_name</i>. For
+    details
+    check the <a
+        href="https://learn.microsoft.com/entra/verified-id/rules-and-display-definitions-model#idtokenhintattestation-type">idTokenHint
+        attestation</a> in credential manifest tab. In your application it's your responsibility to authenticate the
+user,
+how the claim values are gathered, and ensure that
+required claim values are passed in the issuance request.
+}

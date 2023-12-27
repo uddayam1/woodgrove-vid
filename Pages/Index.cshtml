@@ -1,0 +1,49 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+@section Style {
+    <style>
+        body {
+            background-color: var(--color-very-very-light);
+        }
+    </style>
+}
+<div class="text-center" style="padding-top: 50px;">
+
+    <div class="jumbotron wgu_jumbotron" >
+        <h2>Welcome to the Woodgrove team!</h2>
+        <div class="fs-5">
+            We’re excited to have you aboard!
+
+            This online process will help set you up for success. We’ll walk you through:
+            <ol style="padding-top: 20px;">
+                <li>Getting verified credentials</li>
+                <li>Presenting verified credentials</li>
+                <li>Learn how to develop your own application</li>
+            </ol>
+
+            Please enter your name and we’ll get started.
+        </div>
+
+
+        <form style="padding-top: 30px;" method="get" action="/IdTokenHint/issue">
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First name</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" style="width: 300px;" required>
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last name</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" style="width: 300px;" required>
+            </div>
+            <button type="submit" class="btn btn-warning">Submit</button>
+        </form>
+    </div>
+    <div style="text-align: right;">
+        <img src="~/images/homepage_bg.png" style="position: relative; top: -500px; z-index: -50;">
+    </div>
+
+</div>

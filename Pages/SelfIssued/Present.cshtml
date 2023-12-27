@@ -1,0 +1,267 @@
+﻿@page
+@model WoodgroveDemo.Pages.SelfIssued.PresentModel
+@{
+    ViewData["Title"] = "Book an apartment";
+    ViewData["SubTitle"] = "Self-issued attestation";
+}
+
+@section Background {
+    <div id="layover" class="wgu-layover">
+
+        <div class="position-absolute top-0 end-0">
+            <button class="btn btn-warning" onclick="endDemo()" style="margin-left: -100px; margin-top: 25px;">X</button>
+        </div>
+
+        <div class="jumbotron wgu_jumbotron_demo_center" style="top: 50%; left: 50%;">
+            <div class="bs-stepper vertical">
+                <div class="bs-stepper-header" role="tablist">
+                    <!-- your steps here -->
+                    <div class="step" data-target="#intro-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="intro-part"
+                            id="intro-part-trigger">
+                            <span class="bs-stepper-circle" style="visibility: hidden;"><i class="bi bi-info-lg"></i></span>
+                            <span class="bs-stepper-label">Welcome</span>
+                        </button>
+                    </div>
+                    <div class="step" data-target="#information-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="information-part"
+                            id="information-part-trigger">
+                            <span class="bs-stepper-circle"><i class="bi bi-keyboard"></i></span>
+                            <span class="bs-stepper-label">Select a hall</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#qrcode-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="qrcode-part"
+                            id="qrcode-part-trigger">
+                            <span class="bs-stepper-circle"><i class="bi bi-qr-code"></i></span>
+                            <span class="bs-stepper-label">Scan the QR code</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#userAction-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="userAction-part"
+                            id="userAction-part-trigger">
+                            <span class="bs-stepper-circle"><i class="bi bi-person-lock"></i></span>
+                            <span class="bs-stepper-label">Share the card</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#completed-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="completed-part"
+                            id="completed-part-trigger">
+                            <span class="bs-stepper-circle"><i class="bi bi-check2-all"></i></span>
+                            <span class="bs-stepper-label">Completed</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bs-stepper-content position-relative" style="width: 100%;">
+                    <!-- Introdction step -->
+                    <div id="intro-part" class="content fs-5" role="tabpanel" aria-labelledby="intro-part-trigger">
+
+                        This online demo will help you to rent an appartement. Note, all Woodgrove community members
+                        must present a valid code of conduct policy digital document signed by them.
+
+                        <p style="padding-top: 15px;">
+                            Do not have this document? click <a asp-page="Issue" class="link-warning">here</a> to issue.
+                        </p>
+
+                        <p style="padding-top: 15px;">
+                            To start, click the
+                            start
+                            button.
+                        </p>
+
+                        <div class="position-absolute bottom-0 end-0">
+                            <button class="btn btn-warning" onclick="stepper.next()">Start</button>
+                        </div>
+                    </div>
+
+                    <!-- Add credential's information step -->
+                    <div id="information-part" class="content fs-5" role="tabpanel"
+                        aria-labelledby="information-part-trigger">
+
+                        Please select a hall:
+
+                        <div class="mb-3" style="margin-top: 20px;">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="classGroup" id="defaultCheck1" checked>
+                                <label class="form-check-label" for="defaultCheck1">
+                                    The Blue hall <span class="fs-6">(close to the mail campus)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="classGroup" id="defaultCheck2">
+                                <label class="form-check-label" for="defaultCheck2">
+                                    The Green hall <span class="fs-6">(proximity to main campus half a kilometer)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="classGroup" id="defaultCheck2">
+                                <label class="form-check-label" for="defaultCheck2">
+                                    The Green hall <span class="fs-6">(proximity to main campus one kilometer)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="classGroup" id="defaultCheck2">
+                                <label class="form-check-label" for="defaultCheck2">
+                                    The Green hall <span class="fs-6">(5 minutes drive)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="position-absolute bottom-0 end-0">
+                            <button class="btn btn-warning" onclick="startPresentation('SelfIssued');">
+                                <span id="startDemoSpinner" style="display: none;" class="spinner-border spinner-border-sm"
+                                    role="status" aria-hidden="true"></span> Next</button>
+
+                        </div>
+
+                        <div class="position-absolute bottom-0 start-0">
+                            <button class="btn btn-secondary" onclick="stepper.previous()">Back</button>
+                        </div>
+                    </div>
+                    <div id="qrcode-part" class="content fs-5" role="tabpanel" aria-labelledby="qrcode-part-trigger">
+                        Provide a code of conduct policy digital document signed by you.
+                        <partial name="QrCodePartial" />
+                    </div>
+
+                    <div id="userAction-part" class="content fs-5" role="tabpanel"
+                        aria-labelledby="userAction-part-trigger">
+                        <p>
+                            In the Microsoft Authenticator review the presentation request and share the code of conduct
+                            document with
+                            us.
+                        </p>
+
+                        <div class="text-center">
+                            <div class="spinner-border" style="color: orange;" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <p style="margin-top: 100px;">
+                            If you get the <b style="color: orange;">card missing</b> error message in the Microsoft
+                            Authenticator, make sure:
+                        <ul>
+                            <li>You <a asp-page="Issue" class="link-warning">issued</a> the code of conduct credential</li>
+                            <li>The <span style="color: orange;">consent</span> claim's value is <span
+                                    style="color: orange;">yes</span> (case insensitive)</li>
+                        </ul>
+                        </p>
+                    </div>
+
+                    <div id="completed-part" class="content fs-3" style="margin-top: 50px;" role="tabpanel"
+                        aria-labelledby="completed-part-trigger">
+                        Congratulations <span id="valueToPresent" style="color: orange;"></span>, your code of conduct
+                        policy document is valid, and your rental application
+                        submission has been successfully completed.
+
+                        <div class="text-center fs-1" style="margin-top: 20px;">
+                            <i class="bi bi-emoji-smile"></i>
+                        </div>
+
+                        <div class="position-absolute bottom-0 end-0">
+                            <button class="btn btn-warning" onclick="endDemo()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+@section Demo {
+
+    <h2 style="margin-top: 30px;">Welcome to Woodgrove Housing</h2>
+
+    <div>
+        Woodgrove University Housing offers housing and real estate services to the University’s undergraduate graduate and
+        students, faculty, and
+        employees. We’re here to help you make Woodgrove home. A variety of housing, lifestyle and living preferences
+        options are available to you.
+    </div>
+
+    <section class="py-5">
+        <div class="container" style="padding-top: 25px;;">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="mt-3"><i class="bi bi-geo-alt"></i> Best locaions</h5>
+                            <p class="pe-3">Tha apartments are conveniently close to Woodgrove campuses.
+                                The main campus and most labs are a short walk or bike ride away from our residences.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mt-3"><i class="bi bi-house-heart"></i> Utilities included</h5>
+                            <p class="pe-3">On-campus rental costs include utilities such as Internet access, smart TV, air
+                                conditioning,
+                                heat, hot and cold water, electricity, access to a kitchen, and more.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-6 mt-3">
+                            <h5 class="mt-3"><i class="bi bi-currency-exchange"></i> Choose from variety of properties</h5>
+                            <p class="pe-5">All of our halls and apartments are unique and engaging and we have found that
+                                most
+                                students quickly make connections in whatever residence hall and apartments they have been
+                                assigned.</p>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <h5 class="mt-3"><i class="bi bi-buildings"></i> Off-Campus Living</h5>
+                            <p class="pe-3">For members of the Woodgrove Community looking for off-campus housing. Find
+                                information on privately owned properties for rent or sale, landlord ratings.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-6 mt-3">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="startDemo();"><i
+                                    class="bi bi-arrow-right-circle"></i>
+                                Book an apartment now!</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card" style="border-style: none;">
+                        <img src="~/images/scenarios/Dormitory1.jpg" class="homepage-card-image">
+                        <div class="card-body pt-7 text-center">
+                            Focus time in a balcony
+                        </div>
+
+                        <div style="padding-top: 25px;">&nbsp;</div>
+                        <img src="~/images/scenarios/Dormitory2.jpg" class="homepage-card-image">
+                        <div class="card-body pt-7 text-center">
+                            Cosy and trendy
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+}
+
+@section VerifiableCredentialDescription {
+    <p style="margin-top: 10px;">
+        This example shows how to present (and verify) a <a
+            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-selfissued">self-asserted
+            claims
+            attestation </a> verifiable credential, where you're required to manually enter values for the claims in
+        Microsoft Authenticator. Including a <i>display name</i> and <i>consent</i>s. For details check the <a
+            href="https://learn.microsoft.com/entra/verified-id/rules-and-display-definitions-model#selfissuedattestation-type">self-issued
+            attestation</a> in manifest below.
+    </p>
+    <p style="margin-top: 10px;">
+        The presentation request <b>constraints</b> contains a single constraint that must be met when a wallet selects the
+        code of conduct credential.
+        The <a href="https://learn.microsoft.com/entra/verified-id/presentation-request-api#constraints-type">constraint</a>
+        graduates that only code of conduct credential where the <b>consent</b> claim value is <b>yes</b> (case
+        insensitive).
+    </p>
+}

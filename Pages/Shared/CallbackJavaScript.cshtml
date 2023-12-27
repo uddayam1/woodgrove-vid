@@ -1,0 +1,273 @@
+<script>
+    var stepper;
+
+    $(document).ready(function () {
+        // Initiate the stepper UI element if exists
+        if ($('.bs-stepper').length > 0) {
+            stepper = new Stepper($('.bs-stepper')[0]);
+        }
+        else {
+            console.log("Can't find the stepper.")
+        }
+    });
+
+    // Call the demo Woodgrove demo presentation RSET API 
+    function startIssuance(demo, data) {
+
+        // Show the spinner
+        $("#startDemoSpinner").show();
+
+        // Call the Woodgrove demo API
+        $.ajax({
+            type: 'POST',
+            url: '/api/' + demo + '/Issue',
+            data: data,
+            success: function (data) {
+                handleApiResponse(data);
+            },
+            contentType: "application/json",
+            dataType: 'json'
+        });
+    }
+
+    // Call the demo Woodgrove demo issuance RSET API 
+    function startPresentation(demo) {
+
+        // Show the spinner
+        $("#startDemoSpinner").show();
+
+        // Call the Woodgrove demo API
+        $.ajax({
+            type: 'Get',
+            url: '/api/' + demo + '/Present',
+            success: function (data) {
+                handleApiResponse(data);
+            }
+        });
+    }
+
+    function handleApiResponse(data) {
+
+        // Render the HTTP request and response
+        $("#requestContent").show();
+        $("#requestPayload").html(data.requestPayload);
+        $("#responseBody").html(data.responseBody);
+
+        // Stop the spinner
+        $("#startDemoSpinner").hide();
+
+        if (data.errorMessage != "") {
+            // Show the error message
+            if (data.errorUserMessage = "") {
+                $("#errorUserMessage").html(data.errorMessage);
+            }
+            else {
+                $("#errorUserMessage").html(data.errorUserMessage);
+                $("#errorMessage").html(data.errorMessage);
+            }
+
+            $("#errorArea").show();
+        }
+        else {
+            // No error, initiate the QR code
+            $("#qrcode").html("") //Clear it first 
+
+            $("#targetUrl").attr("href", data.qrCodeUrl);
+            var qrcode = new QRCode("qrcode", { width: 250, height: 250 });
+            qrcode.makeCode(data.qrCodeUrl);
+
+            // Render the PIN code (if exists)
+            if ($("#pinCode").length > 0) {
+                $("#pinCode").html(data.pinCode);
+            }
+
+            // Move to the next step
+            stepper.next();
+
+            // Start to check the callback endpoint status
+            startStatusIntervals();
+        }
+    }
+
+    function startStatusIntervals() {
+        statusInterval = setInterval(checkStatus, 2000);
+    }
+
+    //????
+    function startDemo() {
+        stepper.reset();
+
+        $("#requestContent").hide();
+        $("#CallbackJsonPayload").html("");
+
+        waitForUserAction = false;
+        completed = false;
+
+        if ($("#layover").length > 0) {
+            $("#layover").show();
+        }
+    }
+
+    function endDemo() {
+        $("#layover").hide();
+    }
+
+</script>
+
+<script>
+
+    var statusInterval = 0;
+    var waitForUserAction = false;
+    var completed = false;
+
+    function checkStatus() {
+        $.get("/api/status", function (data) {
+
+            //???? $("#Status").html(data.message);
+
+            // Show the raw data return to the call back endpoint
+            if (data.jsonPayload) {
+                $("#CallbackJsonPayload").html(data.jsonPayload.toString());
+            }
+
+            // Stop the interval and take the user to the presentation page
+            if (data.requestStatus == "issuance_successful") {
+
+                window.clearInterval(statusInterval);
+
+                // Show the complete step
+                if (typeof stepper !== 'undefined' && completed == false) {
+                    completed = true;
+                    stepper.next();
+                }
+            }
+
+            else if (data.requestStatus == "request_retrieved") {
+                // The QR code was successfully scanned
+                if (typeof stepper !== 'undefined' && waitForUserAction == false) {
+                    waitForUserAction = true;
+                    stepper.next();
+                }
+            }
+
+            else if (data.requestStatus == "issuance_error") {
+                // There was an error issuing the credential 
+                window.clearInterval(statusInterval);
+
+                var jsonPayload = JSON.parse(data.jsonPayload);
+
+                // Show the error message
+                $("#error").html("<b>Error code</b>: " + jsonPayload.error.code + " <b>Error message</b>: " + jsonPayload.error.message);
+                $("#error").show();
+            }
+
+            else if (data.requestStatus == "presentation_verified") {
+                window.clearInterval(statusInterval);
+
+                // Show the complete step
+                if (typeof stepper !== 'undefined' && completed == false) {
+                    completed = true;
+                    stepper.next();
+                }
+
+                // Instead of showing the next step, call the complete function on the page
+                if ($("#completFunction").length > 0) {
+                    completFunction();
+                }
+
+                // Show the claims
+                var jsonPayload = JSON.parse(data.jsonPayload);
+                var html = `<table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Claim</th>
+                            <th>Value</th>
+                            <th>Type</th>
+                            <th>Issuer</th>
+                        </tr>
+                        </thead><tbody>`
+
+                if (jsonPayload && jsonPayload.verifiedCredentialsData && jsonPayload.verifiedCredentialsData.length > 0) {
+
+                    for (let vc = 0; vc < jsonPayload.verifiedCredentialsData.length; vc++) {
+
+                        // Get the VC types
+                        var VcType = jsonPayload.verifiedCredentialsData[vc].type.toString().replace(',', ', ');
+
+                        // Iterate through the claims
+                        Object.keys(jsonPayload.verifiedCredentialsData[vc].claims).forEach(function (key) {
+                            html += "<tr><td>" + key + "</td><td>" + jsonPayload.verifiedCredentialsData[vc].claims[key] + "</td><td>" + VcType + "</td>" + "</td><td>" + jsonPayload.verifiedCredentialsData[vc].domainValidation.url + "</td></tr>";
+
+                            if (key == 'name' || key == 'firstName' || key == 'displayName') {
+                                // Show the fisrt name or display name
+                                if ($("#valueToPresent").length > 0) {
+                                    $("#valueToPresent").html(jsonPayload.verifiedCredentialsData[vc].claims[key]);
+                                }
+                            }
+                            else if (key == 'id') {
+                                // Show other important claim, for example the card ID
+                                if ($("#secondValueToPresent").length > 0) {
+                                    $("#secondValueToPresent").html(jsonPayload.verifiedCredentialsData[vc].claims[key]);
+                                }
+                            }
+                        })
+                    }
+
+                    html += "</tbody></table>";
+                    $("#content").html(html)
+                    $("#contentContainer").show();
+
+                    //????
+                    if (true) {
+                        $.get("/api/revoke", function (data, status) {
+                            console.log(data);
+                        });
+                    }
+                }
+            }
+            else if (data.requestStatus == "presentation_error") {
+                // There was an error presenting the credential 
+                window.clearInterval(statusInterval);
+
+                var jsonPayload = JSON.parse(data.jsonPayload);
+
+                // Show the error message
+                $("#error").html("<b>Error code</b>: " + jsonPayload.error.code + " <b>Error message</b>: " + jsonPayload.error.message);
+                $("#error").show();
+
+                if (jsonPayload.error.message.includes("is revoked")) {
+                    // Show a user friendly error that the credential was revoked
+                    $("#presentationCompleted").hide();
+                    $("#credentialIsRevoked").show();
+                    stepper.next();
+                }
+            }
+        });
+    }
+
+    function getDefinitions() {
+        if ($("#DisplayDefinition").length > 0) {
+            var path = "/Credentials/" + $("#DisplayDefinition").attr("path") + "/Display.json";
+
+            $("#DisplayDefinition").load(path, function () {
+                $("#DisplayDefinition").html(beautifyJson($("#DisplayDefinition").html()))
+            });
+        }
+
+        if ($("#DisplayDefinition").length > 0) {
+            var path = "/Credentials/" + $("#DisplayDefinition").attr("path") + "/Roles.json";
+
+            $("#RulesDefinition").load(path, function () {
+                $("#RulesDefinition").html(beautifyJson($("#RulesDefinition").html()))
+            });
+        }
+    }
+
+    function beautifyJson(json, find, replace) {
+        json = json.replace(/ /gi, "&nbsp;");
+        return json.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(getDefinitions, 2000)
+
+</script>

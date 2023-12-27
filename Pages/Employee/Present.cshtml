@@ -1,0 +1,199 @@
+﻿@page
+@model WoodgroveDemo.Pages.Employee.PresentModel
+@{
+    ViewData["Title"] = "Wolcome to Contoso admin portal";
+    ViewData["SubTitle"] = "Employee credential attestation";
+}
+
+@section Background {
+    <img id="bgImage1" class="img-fluid wgu-background-image" src="~/images/scenarios/Contoso1.jpg">
+    <img id="bgImage2" style="display: none;" class="img-fluid wgu-background-image" src="~/images/scenarios/Contoso2.jpg">
+}
+
+@section NavbarRight {
+    <div id="checkout" style="display: none; margin-left: 10px;">Welcome to <span id="valueToPresent"
+            style="color: orange;"></span></div>
+}
+
+@section Demo {
+    <div id="pageWelcome">
+        <div class="jumbotron wgu_jumbotron_demo_center" style="top: 25%; left: 50%; width: 30%">
+            <div class="bs-stepper vertical">
+                <div class="bs-stepper-header" role="tablist" style="display: none;">
+                    <!-- your steps here -->
+                    <div class="step" data-target="#intro-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="intro-part"
+                            id="intro-part-trigger">
+                            <span class="bs-stepper-circle" style="visibility: hidden;"><i class="bi bi-info-lg"></i></span>
+                            <span class="bs-stepper-label">Welcome</span>
+                        </button>
+                    </div>
+                    <div class="step" data-target="#qrcode-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="qrcode-part"
+                            id="qrcode-part-trigger">
+                            <span class="bs-stepper-circle"><i class="bi bi-qr-code"></i></span>
+                            <span class="bs-stepper-label">Scan the QR code</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#userAction-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="userAction-part"
+                            id="userAction-part-trigger">
+                            <span class="bs-stepper-circle"><i class="bi bi-person-lock"></i></span>
+                            <span class="bs-stepper-label">Share the card</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#completed-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="completed-part"
+                            id="completed-part-trigger">
+                            <span class="bs-stepper-circle"><i class="bi bi-check2-all"></i></span>
+                            <span class="bs-stepper-label">Completed</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bs-stepper-content position-relative">
+                    <!-- Introdction step -->
+                    <div id="intro-part" class="content fs-5" role="tabpanel" aria-labelledby="intro-part-trigger">
+
+                        <h4><i class="bi bi-person-lock"></i> Login to Contoso</h4>
+                        <p style="margin-top: 15px;">
+                            We are excited to have you
+                            onboard. To access your dashboard, please log
+                            in with your <span style="color: orange;">Contoso account</span> account or <span
+                                style="color: orange;">Contoso employee ID</span>. Do not have Woodgrove
+                            employee ID? click <a asp-page="Issue" class="link-warning">here</a> to get one.
+                        </p>
+
+                        <div class="text-center">
+                            <button type="button" style="margin-top: 15px;" class="btn btn-warning btn-lg"><i
+                                    class="bi bi-arrow-right-circle"></i>
+                                Login</button>
+                            <button type="button" style="margin-top: 15px;" class="btn btn-warning btn-lg" onclick="
+                            startPresentation('Employee');"><i class="bi bi-arrow-right-circle"></i>
+                                <span id="startDemoSpinner" style="display: none;" class="spinner-border spinner-border-sm"
+                                role="status" aria-hidden="true"></span> Login with Woodgrove ID</button>
+                        </div>
+
+                        <p style="color: darkgray; margin-top: 15px;">
+                            If you have any
+                            questions or concerns, please don’t hesitate to contact our support team. We are here to help
+                            you!
+                        </p>
+                    </div>
+
+
+                    <div id="qrcode-part" class="content fs-5" role="tabpanel" aria-labelledby="qrcode-part-trigger">
+                        <div class="text-center">
+                            <partial name="QrCodePartial" />
+                        </div>
+                    </div>
+
+                    <div id="userAction-part" class="content fs-5" role="tabpanel"
+                        aria-labelledby="userAction-part-trigger">
+                        <p>
+                            In the Microsoft Authenticator review the presentation request and share your Woodgrove Contract
+                            ID with
+                            us.
+                        </p>
+
+                        <div class="text-center">
+                            <div class="spinner-border" style="color: orange;" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="completed-part" class="content fs-3" role="tabpanel" aria-labelledby="completed-part-trigger">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <style>
+        :root {
+            --gradient: linear-gradient(to left top, #DD2476 10%, #FF512F 90%) !important;
+        }
+
+        .wgu-portal-card {
+            background-color: #222;
+            border: 2px solid;
+            border-image-slice: 1;
+            border-radius: 5% !important;
+            border-color: #DD2476;
+            color: rgba(250, 250, 250, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .wgu-portal-card:hover,
+        .wgu-portal-card:focus {
+            background: var(--gradient) !important;
+            -webkit-background-clip: none !important;
+            -webkit-text-fill-color: #fff !important;
+            border: 3px solid #fff !important;
+            box-shadow: #222 1px 0 10px;
+            cursor: pointer;
+        }
+    </style>
+
+
+    <div id="pageContent" style="display: none;">
+        <div class="card-deck" style="width: 200px;">
+            <div class="card wgu-portal-card" style=" margin-top: 50px;">
+                <div class="card-body">
+                    <h2 class="card-title text-center"><i class="bi bi-speedometer2"></i></h2>
+                    <h4 class="card-subtitle mb-2  text-center">Dashboard</h4>
+                </div>
+            </div>
+            <div class="card wgu-portal-card" style="margin-top: 50px;">
+                <div class="card-body">
+                    <h2 class="card-title text-center"><i class="bi bi-truck"></i></h2>
+                    <h4 class="card-subtitle mb-2  text-center">Orders and deliveries</h4>
+                </div>
+            </div>
+            <div class="card wgu-portal-card" style="margin-top: 50px;">
+                <div class="card-body">
+                    <h2 class="card-title text-center"><i class="bi bi-question-octagon"></i></h2>
+                    <h4 class="card-subtitle mb-2  text-center">Technical support</h4>
+                </div>
+            </div>
+            <div class="card wgu-portal-card" style="margin-top: 50px;">
+                <div class="card-body">
+                    <h2 class="card-title text-center"><i class="bi bi-buildings-fill"></i></h2>
+                    <h4 class="card-subtitle mb-2  text-center">Building access</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script id="completFunction">
+        function completFunction() {
+            $("#pageWelcome").hide();
+            $("#bgImage1").hide();
+            $("#bgImage2").show();
+            $("#pageContent").show();
+            $("#checkout").show();
+            $("#pageTitle").css('color', 'white');
+        }
+
+    </script>
+}
+
+
+@section VerifiableCredentialDescription {
+    <p style="margin-top: 10px;">
+        This example shows how to present (and verify) a <a
+            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-verifiedemployee">verified employee
+            credential
+        </a> for directory-based claims. All the claims in the verified employee credential come from attributes in the
+        user's profile.
+
+        Issuing a employee credential is now supported in <a href="https://myaccount.microsoft.com/">MyAccount</a> so you
+        can issue it from MyAccount or using <a id="linkToPresent" asp-page="Issue">our demo</a>.
+    </p>
+}

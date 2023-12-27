@@ -1,0 +1,122 @@
+﻿@page
+@model WoodgroveDemo.Pages.SelfIssued.IssueModel
+@{
+    ViewData["Title"] = "Sign the code of conduct policy";
+    ViewData["SubTitle"] = "Self-issued attestation";
+}
+
+@section Background {
+    <img class="img-fluid wgu-background-image" src="~/images/scenarios/Code-of-conduct.jpg">
+}
+
+@section Demo {
+    <div class="jumbotron wgu_jumbotron_demo">
+        <div class="bs-stepper vertical">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- your steps here -->
+                <div class="step" data-target="#intro-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="intro-part"
+                        id="intro-part-trigger">
+                        <span class="bs-stepper-circle" style="visibility: hidden;"><i class="bi bi-info-lg"></i></span>
+                        <span class="bs-stepper-label">Welcome</span>
+                    </button>
+                </div>
+
+                <div class="step" data-target="#qrcode-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="qrcode-part"
+                        id="qrcode-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-qr-code"></i></span>
+                        <span class="bs-stepper-label">Scan the QR code</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#userAction-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="userAction-part"
+                        id="userAction-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-person-lock"></i></span>
+                        <span class="bs-stepper-label">Enter your name</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#completed-part">
+                    <button type="button" class="step-trigger" role="tab" aria-controls="completed-part"
+                        id="completed-part-trigger">
+                        <span class="bs-stepper-circle"><i class="bi bi-check2-all"></i></span>
+                        <span class="bs-stepper-label">Completed</span>
+                    </button>
+                </div>
+            </div>
+            <div class="bs-stepper-content position-relative" style="width: 100%;">
+                <!-- Introdction step -->
+                <div id="intro-part" class="content fs-5" role="tabpanel" aria-labelledby="intro-part-trigger">
+
+                    This online demo will help you sign the Woodgrove University code of conduct policy.
+                    @Model._settings.CardDetails.Card.Description
+
+
+                    <p style="padding-top: 15px;">
+                        If you already have singed and got your credential, delete it from the Authenticator app, or
+                        <a asp-page="Present" class="link-warning">start the presentation demo</a>.
+                    </p>
+
+                    <p style="padding-top: 15px;">
+                        To start, click the
+                        start
+                        button.
+                    </p>
+
+                    <div class="position-absolute bottom-0 end-0">
+                        <button class="btn btn-warning" onclick="startIssuance('SelfIssued', null);">
+                          <span id="startDemoSpinner" style="display: none;" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Start</button>
+                    </div>
+                </div>
+
+
+                <div id="qrcode-part" class="content fs-5" role="tabpanel" aria-labelledby="qrcode-part-trigger">
+                    <partial name="QrCodePartial" />
+                </div>
+                <div id="userAction-part" class="content fs-5" role="tabpanel" aria-labelledby="userAction-part-trigger">
+                    <h4>Enter your name and consent to the policy</h4>
+                    <p style="margin-top: 40px;">
+                        In the Microsoft Authenticator for the <span style="color: orange;">displayName</span> enter your name. For the <span style="color: orange;">consent</span>,
+                        enter yes. Then, select the <b>Add</b> button.
+                    </p>
+
+                </div>
+                <div id="completed-part" class="content fs-3" style="margin-top: 50px;" role="tabpanel"
+                    aria-labelledby="completed-part-trigger">
+                    Thanks for signing our code of conduct. The copy of the policy is stored in Microsoft authenticator on your mobile
+                    phone and ready to use.
+
+                    <div class="text-center fs-1" style="margin-top: 20px;">
+                        <i class="bi bi-emoji-smile"></i>
+                    </div>
+
+                    <p class="fs-6" style="margin-top: 20px;">
+                        Next, start the <a id="linkToPresent" class="link-warning" asp-page="Present">presentation of
+                            the
+                            student card</a> demo
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section VerifiableCredentialDescription {
+
+    <p style="margin-top: 10px;">
+        This example shows how to issue a <a
+            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-selfissued">self-asserted
+            claims
+            attestation </a> verifiable credential, where you're required to manually enter values for the claims in
+        Microsoft Authenticator. Including a <i>display name</i> and <i>consent</i>s. For details check the <a
+            href="https://learn.microsoft.com/entra/verified-id/rules-and-display-definitions-model#selfissuedattestation-type">self-issued
+            attestation</a> in manifest below. In your application it's your responsibility to authenticate the
+        user and ensure that
+        required claim values are included in the <a
+            href="https://learn.microsoft.com/entra/verified-id/rules-and-display-definitions-model#rulesmodel-type">rule
+            definition</a>.
+    </p>
+}

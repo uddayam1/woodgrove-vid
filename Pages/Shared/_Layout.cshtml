@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="~/woodgrove-favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/bs-stepper.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WoodgroveDemo.styles.css" asp-append-version="true" />
+
+    <!----- Load the QR code library------->
+    <script src="/js/qrcode.min.js"></script>
+
+    <!--- Font ---->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet">
+
+    @RenderSection("Style", required: false)
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3"
+            style="margin-bottom: 0!important; border-bottom-style: none!important; font-family: 'Oswald', sans-serif;">
+            <div class="container">
+                <a asp-page="/Index">
+                    <img src="/images/logo.png" height="24" alt="Woodgrove logo" style="padding-left: 10px;" />
+                </a>
+
+                &nbsp;<a class="navbar-brand" asp-area="" asp-page="/Index">Woodgrove University</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-page="/Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-page="/Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+
+                @RenderSection("NavbarRight", required: false)
+            </div>
+        </nav>
+    </header>
+
+    @RenderSection("Background", required: false)
+
+    <div id="mainArea" class="container">
+        <main role="main" class="pb-3">
+
+            @if (IsSectionDefined("Demo"))
+            {
+                <div id="demoArea" style="min-height: 100vh!important;">
+
+                    <h1 id="pageTitle" style="margin-top: 50px;" class="fs-2 wgu-title">@ViewData["Title"]</h1>
+
+                    @RenderSection("Demo", required: false)
+
+                    <!-------Error section -------->
+                    <div id="errorArea" class="alert alert-danger" style="margin-top: 25px; display: none;" role="alert">
+                        <h4 class="alert-heading">Error</h4>
+                        <p id="errorUserMessage"></p>
+
+                        <a class="link-danger" data-bs-toggle="collapse" href="#errorMessage" role="button"
+                            aria-expanded="false" aria-controls="errorMessage">
+                            Show more
+                        </a>
+                        <p class="collapse" id="errorMessage"></p>
+                    </div>
+                </div>
+
+                <!------- Technical details section -------->
+                <div id="technical-details">
+                    <h2 style="padding-top: 25px; margin-left: 20px;">Technical details</h2>
+                    <ul class="nav nav-tabs wgu-nav-tabs" style="margin-top: 25px;" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link wgu_tab_link active" id="AboutTab" data-bs-toggle="tab"
+                                data-bs-target="#AboutContent" type="button" role="tab" aria-controls="AboutContent"
+                                aria-selected="true">About</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link wgu_tab_link" id="requestPayloadTab" data-bs-toggle="tab"
+                                data-bs-target="#HttpRequestContent" type="button" role="tab"
+                                aria-controls="HttpRequestContent" aria-selected="true">HTTP Request</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link wgu_tab_link" id="CallbackJsonPayloadTab" data-bs-toggle="tab"
+                                data-bs-target="#CallbackJsonPayloadContent" type="button" role="tab"
+                                aria-controls="CallbackJsonPayloadContent" aria-selected="false">Callback JSON
+                                payload</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link wgu_tab_link" id="ManifestTab" data-bs-toggle="tab"
+                                data-bs-target="#ManifestContent" type="button" role="tab" aria-controls="ManifestContent"
+                                aria-selected="false">Credential manifest</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link wgu_tab_link" id="DefinitionTab" data-bs-toggle="tab"
+                                data-bs-target="#DefinitionContent" type="button" role="tab"
+                                aria-controls="DefinitionContent" aria-selected="false">Definition</button>
+                        </li>
+                        @if (Model._settings.Presentation)
+                        {
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link wgu_tab_link" id="ClaimsTab" data-bs-toggle="tab"
+                                    data-bs-target="#ClaimsContent" type="button" role="tab" aria-controls="ClaimsContent"
+                                    aria-selected="false">Claims</button>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="tab-content" id="myTabContent" style="padding: 15px;">
+                        <div class="tab-pane fade show active" id="AboutContent" role="tabpanel" aria-labelledby="AboutTab">
+
+                            <h2 class="wgu-subtitle">@ViewData["SubTitle"]</h2>
+
+                            <p>
+                                @RenderSection("VerifiableCredentialDescription", required: false)
+                            </p>
+                            <p>
+                                Below is a representation of the <b>@Model._settings.CardDetails.Card.Title</b>
+                                credential (@Model._settings.CredentialType):<br>
+                                <partial name="CardDetails" model="@Model._settings.CardDetails" />
+                            </p>
+
+
+                            Select the tabs to learn more about the credential and find the technical details of the
+                            verifiable
+                            credential's issuance and presentation HTTP requests.
+
+                            <ul>
+                                <li>The <b>HTTP Request</b> shows the HTTP request and response this application sends to
+                                    the request
+                                    endpoint to
+                                    issue or preset a verifiable credential.</li>
+                                <li>The <b>Callback JSON payload</b> shows the JSON payload that Microsoft Entra Verified ID
+                                    sends to
+                                    the callback endpoint of this application.</li>
+                                <li>The <b>Credential manifest</b> renders the Verified credentials manifest JSON file.</li>
+                                <li>In the <b>Definition</b> tap you can find the <a
+                                        href="https://learn.microsoft.com/entra/verified-id/rules-and-display-definitions-model">rules
+                                        and display definitions</a>.</li>
+                                @if (Model._settings.Presentation)
+                                {
+                                    <li>The <b>Claims</b> tab shows the content of the verified ID.</li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade show" id="HttpRequestContent" role="tabpanel"
+                            aria-labelledby="RequestPayloadTab">
+
+
+                            <div id="requestContent">
+                                <h4>HTTP Request</h4>
+                                <p style="margin-top: 20px;">POST @Model._settings.RequestUrl</p>
+                                <code id="requestPayload">Waiting...</code>
+                                <h4 style="margin-top: 20px;">HTTP Response</h4>
+                                <code style="margin-top: 20px;" id="responseBody">Waiting...</code>
+                            </div>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="CallbackJsonPayloadContent" role="tabpanel"
+                            aria-labelledby="CallbackJsonPayloadTab">
+                            @if (!string.IsNullOrEmpty(Model._settings.Api.URL(Context.Request)))
+                            {
+                                <div>
+                                    <h4>HTTP request to callback endpoint</h4>
+                                    <p style="margin-top: 20px;">POST @Model._settings.Api.URL(Context.Request)</p>
+                                </div>
+                            }
+                            <code id="CallbackJsonPayload">Waiting...</code>
+                        </div>
+                        <div class="tab-pane fade" id="ManifestContent" role="tabpanel" aria-labelledby="ManifestTab">
+
+                            <p>
+                            <h4>HTTP Request</h4>
+                            <p style="margin-top: 20px;">GET @Model._settings.ManifestUrl</p>
+                            <h4 style="margin-top: 20px;">HTTP Response</h4>
+                            </p>
+
+                            <code style="margin-top: 20px;">
+                                @Html.Raw(Model._settings.ManifestContent)
+                                                        </code>
+                        </div>
+                        <div class="tab-pane fade" id="DefinitionContent" role="tabpanel" aria-labelledby="DefinitionTab">
+                            @if (!string.IsNullOrEmpty(Model._settings.DefinitionPath))
+                            {
+                                <div>
+                                    <h4>Display definition</h4>
+                                    The display definition describes the claims contained in the credential as well as the
+                                    branding.<br>
+
+                                    <code id="DisplayDefinition" path="@Model._settings.DefinitionPath">
+                                                                                                                                                                                                                    </code>
+
+                                    <h4 style="margin-top: 25px;">Rules definition</h4>
+                                    The rules definition determines what the user needs to do to get the credentials. <br>
+
+                                    <code id="RulesDefinition" path="@Model._settings.DefinitionPath">
+
+                                                                                                                                                                                                                    </code>
+                                </div>
+                            }
+                            else
+                            {
+                                <div>Not applicable to this type of credential</div>
+                            }
+
+                        </div>
+                        @if (Model._settings.Presentation)
+                        {
+                            <div class="tab-pane fade" id="ClaimsContent" role="tabpanel" aria-labelledby="ClaimsTab">
+
+                                <h4>Verifiable credential's content</h4>
+                                <div class="col text-center">
+                                    <div id="content"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Select a use case -->
+    <button id="offcanvasButton" class="btn btn-success" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" <i
+        class="bi bi-arrow-up-circle fs-3"></i>&nbsp;&nbsp; <span class="fs-5">Select a use case</span></button>
+
+    <div class="offcanvas offcanvas-end" data-bs-scroll="false" tabindex="-1" id="offcanvasRight"
+        aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <img src="/images/logo.png" height="34" alt="Woodgrove logo" />
+            <h3>Select a use case</h3>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="scroller" style="transform: translate(0px, 0px) translateZ(0px);">
+                <partial name="SelectUseCasePartial" />
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 150px;">
+
+    </div>
+    <footer class="footer text-muted bg-dark">
+        <div class="container text-light">
+            &copy; 2024 - Woodgrove University -
+            <i class="bi bi-lock"></i> <a asp-area="" class="text-light" asp-page="/Privacy"
+                style="padding-right: 10px;">Privacy</a>
+            &nbsp;
+            <i class="bi bi-info-circle"></i> <a asp-area="" class="text-light" asp-page="/Help"
+                style="padding-right: 10px;">Help</a>
+        </div>
+    </footer>
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- https://github.com/Johann-S/bs-stepper -->
+    <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+
+    <!------- Callback JavaScript section -------->
+    @if (IsSectionDefined("Demo"))
+    {
+        <partial name="CallbackJavaScript" />
+    }
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
