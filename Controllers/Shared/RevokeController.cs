@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -21,13 +22,15 @@ public class RevokeController : ControllerBase
     public Settings _settings { get; set; }
     private readonly ILogger<CallbackController> _logger;
     private IMemoryCache _cache;
+    private TelemetryClient _Telemetry;
 
 
-    public RevokeController(ILogger<CallbackController> logger, IConfiguration configuration, IMemoryCache cache, IHttpClientFactory httpClientFactory)
+    public RevokeController(ILogger<CallbackController> logger, IConfiguration configuration, IMemoryCache cache, IHttpClientFactory httpClientFactory, TelemetryClient telemetry)
     {
         _logger = logger;
         _cache = cache;
         _httpClientFactory = httpClientFactory;
+        _Telemetry = telemetry;
 
         // Load the settings of this demo
         _settings = new Settings(configuration);
@@ -37,6 +40,9 @@ public class RevokeController : ControllerBase
     [HttpGet("/api/revoke")]
     public async Task<string> GetAsync()
     {
+        // Send telemetry from this web app to Application Insights.
+        AppInsightsHelper.TrackApi(_Telemetry, this.Request);
+
         try
         {
             // Get the current user's state ID from the user's session
@@ -126,11 +132,12 @@ public class RevokeController : ControllerBase
             // Add the revoked card indexed claim to the cache
             // We use this method to avoid a case where user can uses the card before Entra ID manages to complete the revolution
             _cache.Set(status.IndexedClaimValue, "revoked", DateTimeOffset.Now.AddMinutes(Constants.AppSettings.CACHE_EXPIRES_IN_MINUTES));
-            
+
             return "OK";
         }
         catch (Exception ex)
         {
+            AppInsightsHelper.TrackError(_Telemetry, this.Request, ex);
             return "Error: " + ex.Message;
         }
     }

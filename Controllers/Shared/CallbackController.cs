@@ -142,6 +142,7 @@ public class CallbackController : ControllerBase
         }
         catch (Exception ex)
         {
+            AppInsightsHelper.TrackError(_telemetry, this.Request, ex);
             return ErrorHandling(pageView, ex.Message, true, state);
         }
     }

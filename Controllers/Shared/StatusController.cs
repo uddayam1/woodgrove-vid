@@ -1,9 +1,11 @@
 using System.Net;
 using System.Reflection.Metadata;
 using System.Text.Json;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using WoodgroveDemo.Helpers;
 using WoodgroveDemo.Models;
 
 namespace WoodgroveDemo.Controllers;
@@ -17,13 +19,15 @@ public class StatusController : ControllerBase
 
     private readonly ILogger<CallbackController> _logger;
     private IMemoryCache _cache;
+    private TelemetryClient _telemetry;
 
 
-    public StatusController(ILogger<CallbackController> logger, IConfiguration configuration, IMemoryCache cache)
+    public StatusController(ILogger<CallbackController> logger, IConfiguration configuration, IMemoryCache cache, TelemetryClient telemetry)
     {
         _logger = logger;
         _configuration = configuration;
         _cache = cache;
+        _telemetry = telemetry;
     }
 
     [AllowAnonymous]
@@ -58,6 +62,7 @@ public class StatusController : ControllerBase
             }
             catch (Exception ex)
             {
+                AppInsightsHelper.TrackError(_telemetry, this.Request, ex);
                 return new Status
                 {
                     RequestStateId = "",

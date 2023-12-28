@@ -14,6 +14,20 @@ namespace WoodgroveDemo.Helpers;
 public class AppInsightsHelper
 {
 
+    public static void TrackApi(TelemetryClient Telemetry, HttpRequest request)
+    {
+
+        string[] parts = request.Path.Value.Split("/");
+
+        if (parts.Length == 4)
+        {
+            EventTelemetry eventTelemetry = new EventTelemetry($"{parts[2]}_{parts[3]}");
+            eventTelemetry.Properties.Add("Scenario", parts[2]);
+            eventTelemetry.Properties.Add("Action", parts[3]);
+            eventTelemetry.Properties.Add("Type", "API");
+            Telemetry.TrackEvent(eventTelemetry);
+        }  
+    }
     public static void TrackPage(TelemetryClient Telemetry, HttpRequest request)
     {
 
@@ -37,6 +51,9 @@ public class AppInsightsHelper
         string[] parts = PageRoute.Split("/");
 
         PageViewTelemetry pageView = new PageViewTelemetry(PageRoute.Replace("/", "_"));
+
+        // Type of the page
+        pageView.Properties.Add("Type", "Page");
 
         // If the page name is under area, get the area and the page name
         // The area represents the verifiable credential scenario, while the page represents the action type; issue or present
@@ -72,5 +89,16 @@ public class AppInsightsHelper
 
         // Track the page view 
         Telemetry.TrackPageView(pageView);
+    }
+
+    public static void TrackError(TelemetryClient Telemetry, HttpRequest request, Exception ex)
+    {
+        ExceptionTelemetry exp = new ExceptionTelemetry(ex);
+        Telemetry.TrackException(exp);
+    }
+
+    public static void TrackError(TelemetryClient Telemetry, HttpRequest request, string message)
+    {
+        TrackError(Telemetry, request, new Exception(message));
     }
 }

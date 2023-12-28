@@ -64,7 +64,7 @@ public class RequestHelper
             manifestObj.token = manifestObj.token.Replace("_", "/").Replace("-", "+").Split(".")[1];
             manifestObj.token = manifestObj.token.PadRight(4 * ((manifestObj.token.Length + 3) / 4), '=');
             returnValue = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(manifestObj.token));
-            cache.Set(manifestUrl, returnValue);
+            cache.Set(manifestUrl, returnValue, DateTimeOffset.Now.AddMinutes(60));
         }
         else
         {

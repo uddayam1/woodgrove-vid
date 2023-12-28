@@ -42,8 +42,7 @@ public class IssueController : ControllerBase
     public async Task<ResponseToClient> Post([FromBody] RequestJson json)
     {
         // Send telemetry from this web app to Application Insights.
-        //TBD    AppInsightsHelper.TrackPage(_telemetry, this.Request);
-
+        AppInsightsHelper.TrackApi(_Telemetry, this.Request);
 
         // Clear session
         this.HttpContext.Session.Clear();
@@ -118,6 +117,7 @@ public class IssueController : ControllerBase
         }
         catch (Exception ex)
         {
+            AppInsightsHelper.TrackError(_Telemetry, this.Request, ex);
             _Response.ErrorMessage = ex.Message;
         }
 
@@ -126,8 +126,8 @@ public class IssueController : ControllerBase
 }
 
 public class RequestJson
-{ 
-    public string FirstName {set; get;}
-    public string LastName {set; get;}
-    public string? Photo {set; get;}
+{
+    public string FirstName { set; get; }
+    public string LastName { set; get; }
+    public string? Photo { set; get; }
 }

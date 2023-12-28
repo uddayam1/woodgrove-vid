@@ -44,7 +44,7 @@ public class PresentController : ControllerBase
     public async Task<ResponseToClient> Get()
     {
         // Send telemetry from this web app to Application Insights.
-        // TBD AppInsightsHelper.TrackPage(_telemetry, this.Request);
+        AppInsightsHelper.TrackApi(_Telemetry, this.Request);
 
         // Clear session
         this.HttpContext.Session.Clear();
@@ -61,7 +61,7 @@ public class PresentController : ControllerBase
             var client = _HttpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await MsalAccessTokenHandler.AcquireToken(_Settings, _Cache));
 
-                // Call the Microsoft Entra ID request endpoint        
+            // Call the Microsoft Entra ID request endpoint        
             HttpResponseMessage res = await client.PostAsync(
                 _Settings.RequestUrl,
                 new StringContent(request.ToString(), Encoding.UTF8, "application/json"));
@@ -97,6 +97,7 @@ public class PresentController : ControllerBase
         }
         catch (Exception ex)
         {
+            AppInsightsHelper.TrackError(_Telemetry, this.Request, ex);
             _Response.ErrorMessage = ex.Message;
         }
 

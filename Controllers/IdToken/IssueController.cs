@@ -42,7 +42,7 @@ public class IssueController : ControllerBase
     public async Task<ResponseToClient> Post()
     {
         // Send telemetry from this web app to Application Insights.
-        //TBD    AppInsightsHelper.TrackPage(_telemetry, this.Request);
+        AppInsightsHelper.TrackApi(_Telemetry, this.Request);
 
 
         // Clear session
@@ -98,6 +98,7 @@ public class IssueController : ControllerBase
         }
         catch (Exception ex)
         {
+            AppInsightsHelper.TrackError(_Telemetry, this.Request, ex);
             _Response.ErrorMessage = ex.Message;
         }
 

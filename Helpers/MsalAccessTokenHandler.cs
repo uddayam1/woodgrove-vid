@@ -50,7 +50,7 @@ namespace WoodgroveDemo.Helpers
                     throw new Exception(String.Format("Failed to acquire access token: {0} : {1}", accessToken.error, accessToken.error_description));
                 }
 
-                cache.Set("AppAccessToken", accessToken.Item1);
+                cache.Set("AppAccessToken", accessToken.Item1, DateTimeOffset.Now.AddMinutes(50));
                 returnValue = accessToken.Item1;
             }
             else
