@@ -26,7 +26,7 @@ public class AppInsightsHelper
             eventTelemetry.Properties.Add("Action", parts[3]);
             eventTelemetry.Properties.Add("Type", "API");
             Telemetry.TrackEvent(eventTelemetry);
-        }  
+        }
     }
     public static void TrackPage(TelemetryClient Telemetry, HttpRequest request)
     {
@@ -91,14 +91,37 @@ public class AppInsightsHelper
         Telemetry.TrackPageView(pageView);
     }
 
-    public static void TrackError(TelemetryClient Telemetry, HttpRequest request, Exception ex)
+    public static void TrackError(TelemetryClient Telemetry, HttpRequest request, Exception ex, string body = null)
     {
-        ExceptionTelemetry exp = new ExceptionTelemetry(ex);
-        Telemetry.TrackException(exp);
+        ExceptionTelemetry expTelemetry = new ExceptionTelemetry(ex);
+
+        string[] parts = request.Path.Value.Split("/");
+
+        if (parts.Length == 4)
+        {
+            // API url: /api/scenario/action
+            expTelemetry.Properties.Add("Scenario", parts[2]);
+            expTelemetry.Properties.Add("Action", parts[3]);
+            expTelemetry.Properties.Add("Type", "API");
+        }
+        if (parts.Length == 3)
+        {
+            // Page url: /scenario/action
+            expTelemetry.Properties.Add("Scenario", parts[1]);
+            expTelemetry.Properties.Add("Action", parts[2]);
+            expTelemetry.Properties.Add("Type", "Page");
+        }
+
+        if (!string.IsNullOrEmpty(body))
+        {
+            expTelemetry.Properties.Add("Error", body);
+        }
+
+        Telemetry.TrackException(expTelemetry);
     }
 
-    public static void TrackError(TelemetryClient Telemetry, HttpRequest request, string message)
+    public static void TrackError(TelemetryClient Telemetry, HttpRequest request, string message, string body = null)
     {
-        TrackError(Telemetry, request, new Exception(message));
+        TrackError(Telemetry, request, new Exception(message), body);
     }
 }

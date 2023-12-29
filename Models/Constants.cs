@@ -27,6 +27,10 @@ namespace WoodgroveDemo.Models
             public const string STATE_OBJECT_NOT_FOUND = "Error status object couldn't be found in the system. Please try to refresh the page as start again.";
 
             public const string STATE_ID_CANNOT_DESERIALIZE = "Error while trying to deserialize the status object. ";
+            public const string API_ERROR = "Microsoft Entra verified ID API returned an error.";
+            public const string API_CALLBACK_ENTRA_ERROR = "Microsoft Entra verified ID returned an error to callback endpoint.";
+            public const string API_CALLBACK_INTERANL_ERROR = "Callback endpoint internal error.";
+
         }
         public class RequestStatus
         {

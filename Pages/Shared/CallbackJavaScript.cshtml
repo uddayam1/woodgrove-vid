@@ -246,6 +246,15 @@
     }
 
     function getDefinitions() {
+
+        if ( $("#DisplayDefinition").attr("path") == "Employee")
+        {
+            // Employee doesn't have definitions
+            $("#DisplayDefinition").html("No display definition for the employee credential.");
+            $("#RulesDefinition").html("No rules definition for the employee credential.");
+            return;
+        }
+
         if ($("#DisplayDefinition").length > 0) {
             var path = "/Credentials/" + $("#DisplayDefinition").attr("path") + "/Display.json";
 

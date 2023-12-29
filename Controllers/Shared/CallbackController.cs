@@ -148,32 +148,31 @@ public class CallbackController : ControllerBase
     }
 
 
-    private BadRequestObjectResult ErrorHandling(PageViewTelemetry pageView, string errorMessage, bool internl, string state, string requestStatus = "")
+    private BadRequestObjectResult ErrorHandling(PageViewTelemetry pageView, string errorBody, bool internl, string state, string requestStatus = "")
     {
 
-        // Add telemetry to the application insights
-        pageView.Properties.Add("Error", errorMessage);
+
+        string ErrorMessage = string.Empty;
 
         if (internl)
-            pageView.Properties.Add("Error_type", "Internal");
+            ErrorMessage =  Constants.ErrorMessages.API_CALLBACK_INTERANL_ERROR;
         else
-            pageView.Properties.Add("Error_type", "Returned by Entra ID");
+            ErrorMessage =  Constants.ErrorMessages.API_CALLBACK_ENTRA_ERROR;
 
-        // Track this page with the error
-        _telemetry.TrackPageView(pageView);
+        AppInsightsHelper.TrackError(_telemetry, this.Request, ErrorMessage, errorBody);
 
         // Set the request status object into the global cache using the state ID key
         Status status = new Status()
         {
             RequestStateId = state,
             RequestStatus = requestStatus,
-            JsonPayload = errorMessage
+            JsonPayload = errorBody
         };
 
         _cache.Set(state, status.ToString(), DateTimeOffset.Now.AddMinutes(Constants.AppSettings.CACHE_EXPIRES_IN_MINUTES));
 
 
-        return BadRequest(new { error = "400", error_description = errorMessage });
+        return BadRequest(new { error = "400", error_description = errorBody });
     }
 
 }

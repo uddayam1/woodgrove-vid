@@ -99,6 +99,7 @@ public class PresentController : ControllerBase
             }
             else
             {
+                AppInsightsHelper.TrackError(_Telemetry, this.Request, Constants.ErrorMessages.API_ERROR, _Response.ResponseBody);
                 _Response.ErrorMessage = _Response.ResponseBody;
                 _Response.ErrorUserMessage = ResponseError.Parse(_Response.ResponseBody).GetUserMessage();
             }
