@@ -311,9 +311,9 @@ a:hover {
 /******************* Cellphone devices******************************/
 
 @media (max-width:992px) {
-  body {
+  /* body {
     background-color: gray;
-  }
+  } */
 
   /** Don't show the steppers menu if the viewport is 850 pixels wide or narrow */
   .bs-stepper-header {
