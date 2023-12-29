@@ -93,7 +93,7 @@
         statusInterval = setInterval(checkStatus, 2000);
     }
 
-    //????
+    //Start a demo
     function startDemo() {
         stepper.reset();
 
@@ -106,6 +106,8 @@
         if ($("#layover").length > 0) {
             $("#layover").show();
         }
+
+        window.scrollTo(0, 0);
     }
 
     function endDemo() {

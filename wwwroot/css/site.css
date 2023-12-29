@@ -263,7 +263,7 @@ a:hover {
 }
 
 #technical-details {
-  background-color: var(--color-very-very-light);
+  background-color: white;
   margin-top: 50px;
   border-radius: 10px;
 }
@@ -303,10 +303,32 @@ a:hover {
   padding: 30px 15px 30px 15px;
   position: absolute;
   transform: translate(-50%, -60%);
+  width: 70%;
 }
 
-@media (max-width: 1250px) {
-  .wgu_jumbotron {
-    width: 100%;
+
+
+/******************* Cellphone devices******************************/
+
+@media (max-width:992px) {
+  body {
+    background-color: gray;
+  }
+
+  /** Don't show the steppers menu if the viewport is 850 pixels wide or narrow */
+  .bs-stepper-header {
+    display: none !important;
+  }
+
+  /*Hide UI elements on small screens*/
+  .hide-in-narrow-screen {
+    display: none;
+  }
+
+  /*Make the jumbotron 100% width if the viewport is 1250 pixels wide or narrow*/
+  .wgu_jumbotron,
+  .wgu_jumbotron_demo,
+  .wgu_jumbotron_demo_center {
+    width: 100% !important;
   }
 }
