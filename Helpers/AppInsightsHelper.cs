@@ -80,6 +80,9 @@ public class AppInsightsHelper
             catch (System.Exception ex)
             {
                 pageView.Properties.Add("Referral", "Invalid");
+                
+                // Add the full URL
+                pageView.Properties.Add("ReferralURL", referer);
             }
         }
         else
