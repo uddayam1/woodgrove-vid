@@ -198,7 +198,15 @@
 
                         // Iterate through the claims
                         Object.keys(jsonPayload.verifiedCredentialsData[vc].claims).forEach(function (key) {
-                            html += "<tr><td>" + key + "</td><td>" + jsonPayload.verifiedCredentialsData[vc].claims[key] + "</td><td>" + VcType + "</td>" + "</td><td>" + jsonPayload.verifiedCredentialsData[vc].domainValidation.url + "</td></tr>";
+                            
+                            var style = "";
+                            if (jsonPayload.verifiedCredentialsData[vc].claims[key].length > 70)
+                            {
+                                // Prevent page scrolling for large texts
+                                style = " style='overflow: auto; display: inline-block; max-width: 400px;'"
+                            }
+
+                            html += "<tr><td>" + key + "</td><td " + style + ">" + jsonPayload.verifiedCredentialsData[vc].claims[key] + "</td><td>" + VcType + "</td>" + "</td><td>" + jsonPayload.verifiedCredentialsData[vc].domainValidation.url + "</td></tr>";
 
                             if (key == 'name' || key == 'firstName' || key == 'displayName') {
                                 // Show the fisrt name or display name
