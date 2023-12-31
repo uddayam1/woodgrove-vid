@@ -126,21 +126,21 @@
     <div class="row">
         <div class="col fs-4">
             <p style="margin-top: 100px;">
-                Woodgrove gift card is a prepaid stored-value money card, issued by Woodgrove, to be used as an
-                alternative to cash
-                for purchases within Woodgrove store and related businesses.
-            <h4>We go the extra mile for you</h4>
+                Woodgrove loyalty progarm offers discounts, priority support, and flexible free shippoing.
+            <h4>Loyal to You, Loyal to Quality</h4>
             <ul class="col fs-6">
-                <li>Benefit from rewards that the Woodgrove Groceries offers to you.</li>
-                <li>Enjoy the silver status recognition and elevated benefits in all our stores.</li>
-                <li>Use our community to share with others their preferences and values.</li>
-                <li>Enjoy exclusive discounted rates for Woodgrove Groceries loyalty members</li>
+                <li>Benefit from free Wi-Fi access in all Woodgrove Groceries stores and Cafes.</li>
+                <li>Exclusive access to sales or events.</li>
+                <li>Free shipping and return.</li>
+                <li>Enjoy VIP perks, birthday gifts and rewards.</li>
             </ul>
 
             <button type="button" style="margin-top: 50px;" class="btn btn-secondary btn-lg" onclick="startDemo();"><i
                     class="bi bi-gift"></i>
                 Get Woodgrove loyalty card now</button>
             </p>
+
+            <h2 style="color: red">This demo is under development and may not work!</h2>
         </div>
         <div class="col" style="padding-left: 100px;">
             <p class="text-center">
@@ -161,18 +161,16 @@
 @section VerifiableCredentialDescription {
     <p style="margin-top: 10px;">
         This example shows how to issue a verifiable credential with <a
-            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-multiple">multiple attestations</a>.
+            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-idtoken">ID tokens
+            attestation</a>, where you were required to do an interactive sign-in to an OpenID Connect (OIDC)
+        identity provider during the credential issuance flow.
 
-        Woodgrove University provides the <b>sum</b> claim specifying the amount of money in the card (<a
-            href="https://learn.microsoft.com/en-us/entra/verified-id/how-to-use-quickstart">ID token hint attestation</a>).
-        The user enters their display name (<a
-            href="https://learn.microsoft.com/entra/verified-id/how-to-use-quickstart-selfissued">self-issue
-            attestation</a>).
-        For
-        details check the <a
-            href="https://learn.microsoft.com/en-us/entra/verified-id/rules-and-display-definitions-model#idtokenhintattestation-type">idTokenHint
-            attestation</a> and the <a
-            href="https://learn.microsoft.com/en-us/entra/verified-id/rules-and-display-definitions-model#selfissuedattestation-type">selfIssued</a>
-        attestation</a> in manifest below.
+        In this example, you issued the verifiable credential after you signed-in or signed-up with a <a
+            href="https://woodgrovedemo.com/">Woodgrove Groceries account</a>.
+        The verifiable credential contains the <i>name</i>, <i>loyaltyNumber</i>, <i>loyaltyTier</i>, and
+        <i>loyaltySince</i> claims
+        that return by Woodgrove Groceries' identity provider. For details check the <a
+            href="https://learn.microsoft.com/en-us/entra/verified-id/rules-and-display-definitions-model#idtokenattestation-type">idTokenAttestation
+            attestation</a> in the credential definition tab.
     </p>
 }
