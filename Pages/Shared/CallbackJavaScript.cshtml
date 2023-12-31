@@ -159,8 +159,9 @@
                 var jsonPayload = JSON.parse(data.jsonPayload);
 
                 // Show the error message
-                $("#error").html("<b>Error code</b>: " + jsonPayload.error.code + " <b>Error message</b>: " + jsonPayload.error.message);
-                $("#error").show();
+                $("#errorUserMessage").html(jsonPayload.error.message);
+                $("#errorMessage").html(jsonPayload.error.code);
+                $("#errorArea").show();
             }
 
             else if (data.requestStatus == "presentation_verified") {
@@ -242,8 +243,9 @@
                 var jsonPayload = JSON.parse(data.jsonPayload);
 
                 // Show the error message
-                $("#error").html("<b>Error code</b>: " + jsonPayload.error.code + " <b>Error message</b>: " + jsonPayload.error.message);
-                $("#error").show();
+                $("#errorUserMessage").html(jsonPayload.error.message);
+                $("#errorMessage").html(jsonPayload.error.code);
+                $("#errorArea").show();
 
                 if (jsonPayload.error.message.includes("is revoked")) {
                     // Show a user friendly error that the credential was revoked
