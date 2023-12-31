@@ -40,24 +40,24 @@ namespace WoodgroveDemo.Helpers
         {
             // Aquire an access token which will be sent as bearer to the request API
             // Try to read the manifest from the cache using its URL key
-            string returnValue = string.Empty;
+            //string returnValue = string.Empty;
 
-            if (!cache.TryGetValue("AppAccessToken", out returnValue))
+            // if (!cache.TryGetValue("AppAccessToken", out returnValue))
+            // {
+            var accessToken = await MsalAccessTokenHandler.GetAccessToken(settings);
+            if (accessToken.Item1 == String.Empty)
             {
-                var accessToken = await MsalAccessTokenHandler.GetAccessToken(settings);
-                if (accessToken.Item1 == String.Empty)
-                {
-                    throw new Exception(String.Format("Failed to acquire access token: {0} : {1}", accessToken.error, accessToken.error_description));
-                }
+                throw new Exception(String.Format("Failed to acquire access token: {0} : {1}", accessToken.error, accessToken.error_description));
+            }
 
-                cache.Set("AppAccessToken", accessToken.Item1, DateTimeOffset.Now.AddMinutes(50));
-                returnValue = accessToken.Item1;
-            }
-            else
-            {
-                Console.WriteLine("Successfully read the access token from the cache.");
-            }
-            return returnValue;
+            //cache.Set("AppAccessToken", accessToken.Item1, DateTimeOffset.Now.AddMinutes(50));
+            return accessToken.Item1;
+            // }
+            // else
+            // {
+            //     Console.WriteLine("Successfully read the access token from the cache.");
+            // }
+            //return returnValue;
         }
 
         public static async Task<(string token, string error, string error_description)> GetAccessToken(Settings settings, string[] scopes = null)
