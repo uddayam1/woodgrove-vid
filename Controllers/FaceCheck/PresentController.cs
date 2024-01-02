@@ -43,11 +43,11 @@ public class PresentController : ControllerBase
 
     public async Task<ResponseToClient> Get()
     {
-        // Send telemetry from this web app to Application Insights.
-        AppInsightsHelper.TrackApi(_Telemetry, this.Request);
-
         // Clear session
         this.HttpContext.Session.Clear();
+
+        // Initiate the status object
+        Status status = new Status("FaceCheck", "Present");
 
         try
         {
@@ -80,13 +80,14 @@ public class PresentController : ControllerBase
                 this.HttpContext.Session.SetString("state", request.callback.state);
 
                 // Add the global cache with the request status
-                Status status = new Status()
-                {
-                    RequestStateId = request.callback.state,
-                    RequestStatus = Constants.RequestStatus.REQUEST_CREATED,
-                    Flow = "Presentation"
-                };
+                status.RequestStateId = request.callback.state;
+                status.RequestStatus = Constants.RequestStatus.REQUEST_CREATED;
+                status.Timing.Add($"{status.CalculateExecutionTime()} {status.RequestStatus}");
 
+                // Send telemetry from this web app to Application Insights.
+                AppInsightsHelper.TrackApi(_Telemetry, this.Request, status);
+
+                // Add the status object to the cache
                 _Cache.Set(request.callback.state, status.ToString(), DateTimeOffset.Now.AddMinutes(Constants.AppSettings.CACHE_EXPIRES_IN_MINUTES));
             }
             else

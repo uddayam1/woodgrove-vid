@@ -5,6 +5,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Caching.Memory;
+using WoodgroveDemo.Models;
 using WoodgroveDemo.Models.Issuance;
 using WoodgroveDemo.Models.Manifest;
 using WoodgroveDemo.Models.Presentation;
@@ -14,7 +15,7 @@ namespace WoodgroveDemo.Helpers;
 public class AppInsightsHelper
 {
 
-    public static void TrackApi(TelemetryClient Telemetry, HttpRequest request)
+    public static void TrackApi(TelemetryClient Telemetry, HttpRequest request, Status status)
     {
 
         string[] parts = request.Path.Value.Split("/");
@@ -22,9 +23,13 @@ public class AppInsightsHelper
         if (parts.Length == 4)
         {
             EventTelemetry eventTelemetry = new EventTelemetry($"{parts[2]}_{parts[3]}");
-            eventTelemetry.Properties.Add("Scenario", parts[2]);
-            eventTelemetry.Properties.Add("Action", parts[3]);
+            eventTelemetry.Properties.Add("Scenario", status.Scenario);
+            eventTelemetry.Properties.Add("Action", status.Flow);
             eventTelemetry.Properties.Add("Type", "API");
+            eventTelemetry.Properties.Add("State", status.RequestStateId);
+            eventTelemetry.Properties.Add("RequestStatus", status.RequestStatus);
+            eventTelemetry.Properties.Add("ExecutionTime", status.CalculateExecutionTime());
+            eventTelemetry.Properties.Add("ExecutionSeconds", status.CalculateExecutionSeconds().ToString());
             Telemetry.TrackEvent(eventTelemetry);
         }
     }
@@ -80,7 +85,7 @@ public class AppInsightsHelper
             catch (System.Exception ex)
             {
                 pageView.Properties.Add("Referral", "Invalid");
-                
+
                 // Add the full URL
                 pageView.Properties.Add("ReferralURL", referer);
             }

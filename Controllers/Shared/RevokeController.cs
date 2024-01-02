@@ -40,9 +40,7 @@ public class RevokeController : ControllerBase
     [HttpGet("/api/revoke")]
     public async Task<string> GetAsync()
     {
-        // Send telemetry from this web app to Application Insights.
-        AppInsightsHelper.TrackApi(_Telemetry, this.Request);
-
+        Status newStatus = new Status();
         try
         {
             // Get the current user's state ID from the user's session
@@ -128,6 +126,12 @@ public class RevokeController : ControllerBase
                 responseString = await response.Content.ReadAsStringAsync();
                 return responseString;
             }
+
+            // Send telemetry from this web app to Application Insights.
+            newStatus.RequestStatus = "Revocation completed";
+            newStatus.Flow = "Revocation";
+            newStatus.Timing.Add($"{status.CalculateExecutionTime()} {status.RequestStatus}");
+            AppInsightsHelper.TrackApi(_Telemetry, this.Request, newStatus);
 
             // Add the revoked card indexed claim to the cache
             // We use this method to avoid a case where user can uses the card before Entra ID manages to complete the revolution

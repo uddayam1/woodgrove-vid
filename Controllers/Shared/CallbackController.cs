@@ -70,11 +70,14 @@ public class CallbackController : ControllerBase
             eventTelemetry.Properties.Add("RequestStatus", callback.requestStatus);
 
             // Get the current status from the cache and add the flow telemetry
+            Status currentStatus = new Status();
             if (_cache.TryGetValue(callback.state, out string requestState))
             {
-                Status currentStatus = Status.Parse(requestState);
+                currentStatus = Status.Parse(requestState);
                 flow = currentStatus.Flow;
-                eventTelemetry.Properties.Add("Flow", flow);
+                eventTelemetry.Properties.Add("Type", "Callback");
+                eventTelemetry.Properties.Add("Scenario", currentStatus.Scenario);
+                eventTelemetry.Properties.Add("Action", currentStatus.Flow);
                 eventTelemetry.Properties.Add("ExecutionTime", currentStatus.CalculateExecutionTime());
                 eventTelemetry.Properties.Add("ExecutionSeconds", currentStatus.CalculateExecutionSeconds().ToString());
             }
@@ -91,9 +94,15 @@ public class CallbackController : ControllerBase
                 {
                     RequestStateId = callback.state,
                     RequestStatus = callback.requestStatus,
+                    StartTime = currentStatus.StartTime,
                     JsonPayload = body,
-                    Flow = flow
+                    Scenario = currentStatus.Scenario,
+                    Flow = currentStatus.Flow
                 };
+
+                // Track the execution timing
+                status.Timing = currentStatus.Timing;
+                status.Timing.Add($"{currentStatus.CalculateExecutionTime()} {callback.requestStatus}");
 
                 // Add the indexed claim value to search and revoke the credential
                 // Note, this code is relevant only to the gift card demo

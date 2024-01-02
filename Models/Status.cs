@@ -9,12 +9,21 @@ public class Status
     public string Message { get; set; }
     public string JsonPayload { get; set; }
     public string Flow { get; set; }
+    public string Scenario { get; set; }
     public string IndexedClaimValue { get; set; }
     public DateTime StartTime { get; set; }
+    public List<string> Timing { get; set; } = new List<string>();
+
+    public Status(string scenario, string flow): this()
+    {
+        this.Scenario = scenario;
+        this.Flow = flow;
+    }
 
     public Status()
     {
         StartTime = DateTime.Now;
+        Timing.Add($"00:00:00 Started");
     }
 
     /// <summary>

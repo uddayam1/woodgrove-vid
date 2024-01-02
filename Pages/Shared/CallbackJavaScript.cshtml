@@ -125,12 +125,13 @@
     function checkStatus() {
         $.get("/api/status", function (data) {
 
-            //???? $("#Status").html(data.message);
-
             // Show the raw data return to the call back endpoint
             if (data.jsonPayload) {
                 $("#CallbackJsonPayload").html(data.jsonPayload.toString());
             }
+
+            // Show the timing
+            $("#Timing").html(data.timing.toString().replace(/,/g, '<br>'));
 
             // Stop the interval and take the user to the presentation page
             if (data.requestStatus == "issuance_successful") {
