@@ -130,7 +130,7 @@ public class RevokeController : ControllerBase
             // Send telemetry from this web app to Application Insights.
             newStatus.RequestStatus = "Revocation completed";
             newStatus.Flow = "Revocation";
-            newStatus.Timing.Add($"{status.CalculateExecutionTime()} {status.RequestStatus}");
+            newStatus.AddHistory(status.RequestStatus, status.CalculateExecutionTime());
             AppInsightsHelper.TrackApi(_Telemetry, this.Request, newStatus);
 
             // Add the revoked card indexed claim to the cache

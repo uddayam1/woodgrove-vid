@@ -100,9 +100,9 @@ public class CallbackController : ControllerBase
                     Flow = currentStatus.Flow
                 };
 
-                // Track the execution timing
-                status.Timing = currentStatus.Timing;
-                status.Timing.Add($"{currentStatus.CalculateExecutionTime()} {callback.requestStatus}");
+                // Track the execution history
+                status.History = currentStatus.History;
+                status.AddHistory(callback.requestStatus, currentStatus.CalculateExecutionTime(), body);
 
                 // Add the indexed claim value to search and revoke the credential
                 // Note, this code is relevant only to the gift card demo

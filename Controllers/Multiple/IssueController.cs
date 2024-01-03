@@ -94,7 +94,7 @@ public class IssueController : ControllerBase
                 // Add the global cache with the request status
                 status.RequestStateId = request.callback.state;
                 status.RequestStatus = Constants.RequestStatus.REQUEST_CREATED;
-                status.Timing.Add($"{status.CalculateExecutionTime()} {status.RequestStatus}");
+                status.AddHistory(status.RequestStatus, status.CalculateExecutionTime());
 
                 // Send telemetry from this web app to Application Insights.
                 AppInsightsHelper.TrackApi(_Telemetry, this.Request, status);
