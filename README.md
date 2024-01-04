@@ -16,7 +16,7 @@ Each demo allows you to issue a verified ID and then present it. You first issue
 
 The pages are divided into two main sections. In the first top part of the page is where you can run the demo and experience the issuance and presentation demos by yourself. Scrolling down you can learn more how the demo, how it works and how to implement in own application. 
 
-![Screenshot that shows the demo part and the technical details section.](./wwwroot/images/help/Issue_and_present.png)
+![Screenshot that shows the demo part and the technical details section.](./wwwroot/images/help/technical_details.png)
 
 Under the **Technical details** section, select one of the tabs to learn more about the credential and find the technical details of the verified ID's issuance and presentation HTTP requests.
 
